@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------------
-// File: poly-tree.ts                                                              //
+// File: index.ts                                                                  //
 // Project: lieene.CodeFactory                                                     //
 // Created Date: Wed Oct 30 2019                                                   //
 // Author: Lieene Guo                                                              //
@@ -34,7 +34,7 @@
 // Date      	By	Comments                                                       //
 // ----------	---	----------------------------------------------------------     //
 //-----------------------------------------------------------------------------------
-
+import "@lieene/ts-utility";
 import * as L from "@lieene/ts-utility";
 
 namespace core
