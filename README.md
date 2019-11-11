@@ -1,1 +1,1 @@
-"# Poly tree for typescript" 
+# Polymorphic tree for typescript
