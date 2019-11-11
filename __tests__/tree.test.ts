@@ -1,4 +1,4 @@
-import { Tree as tr, Forest as ft, NamedTree as nt } from "../src/poly-tree";
+import { Tree as tr, Forest as ft, NamedTree as nt } from "../src";
 
 test("poly tree test", () =>
 {
