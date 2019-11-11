@@ -1,5 +1,5 @@
 {
-  "name": "@lieene/poly-tree",
+  "name": "poly-tree",
   "version": "1.0.0",
   "description": "polymorphic tree for typescript",
   "main": "out/index.js",
