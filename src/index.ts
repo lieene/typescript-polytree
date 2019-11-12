@@ -38,7 +38,8 @@ import '@lieene/ts-utility';
 import * as L from '@lieene/ts-utility';
 
 namespace core {
-  export class CNode { // implements INode<CNode, CRoot>//, INodeEdit<CNode, CRoot>
+  export class CNode {
+    // implements INode<CNode, CRoot>//, INodeEdit<CNode, CRoot>
     constructor(tree: CTree | undefined, index: number, peerIndex: number, parentID: number | undefined) {
       this.tree = tree!;
       this.index = index;
@@ -131,7 +132,8 @@ namespace core {
     //#endregion --------------------------------------------------------------------------------
   }
 
-  export class CTree { // extends CNode implements IRoot<CNode, CRoot>
+  export class CTree {
+    // extends CNode implements IRoot<CNode, CRoot>
     constructor(empty: boolean = false) {
       if (!empty) {
         this.nodes.push(new CNode(this, 0, 0, undefined));
@@ -983,7 +985,8 @@ namespace Typing {
     remove(this: TNode): TNode[];
   }
 
-  export interface ITreeEditing<TNode extends INodeEditing<TNode, TTree>, TTree extends ITreeEditing<TNode, TTree>> { // extends ITree<TNode, TTree>
+  export interface ITreeEditing<TNode extends INodeEditing<TNode, TTree>, TTree extends ITreeEditing<TNode, TTree>> {
+    // extends ITree<TNode, TTree>
     push(): TNode; //& func.Router<TNode, TTree, TNode>;
     push<T extends object>(...ext: T[]): TNode & L.MergO<T>; //& func.Router<L.Extend<TNode,T>, TTree, TNode>;
     push<T extends object>(ext: (node: TNode) => T): TNode & L.MergO<T>; //& func.Router<L.Extend<TNode,T>, TTree, TNode>;
