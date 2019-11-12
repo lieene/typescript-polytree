@@ -4,7 +4,7 @@
 // Created Date: Wed Oct 30 2019                                                   //
 // Author: Lieene Guo                                                              //
 // -----                                                                           //
-// Last Modified: Mon Nov 11 2019                                                  //
+// Last Modified: Tue Nov 12 2019                                                  //
 // Modified By: Lieene Guo                                                         //
 // -----                                                                           //
 // MIT License                                                                     //
@@ -816,7 +816,7 @@ namespace func {
 
   const nodeBaseProps: Array<PropertyKey> = ['index', 'tree', 'peerIndex', 'parentID', 'childrenID'];
   const NodeBaseProps = L.asLiterals(['index', 'tree', 'peerIndex', 'parentID', 'childrenID']);
-  type NodeBaseProps = L.LiteralType<typeof NodeBaseProps, any>;
+  type NodeBaseProps = L.MapLiteralArray<typeof NodeBaseProps, any>;
 
   export function RemapNodeID(remap: number[], ...oldIndexs: readonly number[]): number[] {
     return oldIndexs.reduce<number[]>((p, n) => {
