@@ -16,20 +16,27 @@ test("poly tree test", () =>
     console.log(t3.info(true));
     let t4 = t.clone(true, n => n.depth <= 1, (n, o) => n.poly(nt.named('clone'))).polymorph(nt.named("clone tree"));
     console.log(t4.info(true));
-    t4.merg(t3,0);
-    t4.merg(t3,1,false);
+    t4.merg(t3, 0);
+    t4.merg(t3, 1, false);
     t4.merg(t2);
     //t4.merg(t3,0,false);
     console.log(t4.info(true));
     t4.root.child(1)!.remove();
-    t4.root.child(5,1)!.remove();
+    t4.root.child(5, 1)!.remove();
     console.log(t4.info(true));
     console.log(t3.info(true));
     console.log(t2.info(true));
     console.log(t.info(true));
     console.log(t.root.child(1)!.subTreeInfo());
 
-    let t4s=tr.Simplify(t4);
-    let f=ft<nt.Named>(nt.named('the forest'));
-    f.trees.push(t2,t3,t4);
+    let t4s = tr.Simplify(t4);
+    let f = ft<nt.Named>(nt.named('the forest'));
+    f.trees.push(t2, t3, t4);
+
+
+
+    //let a = Tree().root.morph({ a: "s", b: 1 }).tree.morph({source:"sss"});
+    let a = tr();
+    let b = tr.Simplify(a);
+    let c = b.polymorph<{ a: number }, { source: string }>();
 });
