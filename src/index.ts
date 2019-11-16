@@ -897,12 +897,16 @@ namespace Typing {
     readonly parent: TNode | undefined;
     readonly children: readonly TNode[];
     readonly deepChildren: readonly TNode[];
-    readonly childCount: number;
+    readonly childCount: number;    
+    clone(cleanTree?: true, picker?: (oldNode: TNode) => boolean, remix?: (newNode: NodeX, oldNode: TNode) => void): TTree;
+    clone(cleanTree?: false, picker?: (oldNode: TNode) => boolean, remix?: (newNode: TNode, oldNode: TNode) => void): TTree;
     child(...i: (number | 'last')[]): TNode | undefined;
   }
   export interface ITreeSimple<TNode extends INodeSimple<TNode, TTree>, TTree extends ITreeSimple<TNode, TTree>> {
     readonly root: TNode;
-    readonly tail: TNode;
+    readonly tail: TNode;    
+    clone(cleanTree?: true, picker?: (oldNode: TNode) => boolean, remix?: (newNode: NodeX, oldNode: TNode) => void): TTree;
+    clone(cleanTree?: false, picker?: (oldNode: TNode) => boolean, remix?: (newNode: TNode, oldNode: TNode) => void): TTree;
     readonly nodeCount: number;
   }
   //---------------------------------------------------------------------------------------------------------------------------------
@@ -946,8 +950,6 @@ namespace Typing {
     add<N extends object[]>(morph: 'morph', ...ext: N): MorphNodeNX<L.Extend<ExtOverNodeN<TNode>, L.MergTupleType<N>>>;
     add<N extends object>(morph: 'morph', ext: (node: TNode) => N): MorphNodeNX<L.Extend<ExtOverNodeN<TNode>, L.MergO<N>>>;
 
-    clone(cleanTree?: true, picker?: (oldNode: TNode) => boolean, remix?: (newNode: NodeX, oldNode: TNode) => void): TTree;
-    clone(cleanTree?: false, picker?: (oldNode: TNode) => boolean, remix?: (newNode: TNode, oldNode: TNode) => void): TTree;
 
     merg<TSub extends Node0>(sub: TSub): TNode;
     merg<TSub extends Node0>(sub: TSub, peerIdx?: number): TNode;
@@ -969,9 +971,6 @@ namespace Typing {
     add<N extends object>(ext: (node: TNode) => N): TTree;
     add<N extends object[]>(morph: 'morph', ...ext: N): MorphTreeNX<L.Extend<ExtOverNodeN<TNode>, L.MergTupleType<N>>>;
     add<N extends object>(morph: 'morph', ext: (node: TNode) => N): MorphTreeNX<L.Extend<ExtOverNodeN<TNode>, L.MergO<N>>>;
-
-    clone(cleanTree?: true, picker?: (oldNode: TNode) => boolean, remix?: (newNode: NodeX, oldNode: TNode) => void): TTree;
-    clone(cleanTree?: false, picker?: (oldNode: TNode) => boolean, remix?: (newNode: TNode, oldNode: TNode) => void): TTree;
 
     merg<TSub extends Node0>(sub: TSub): TNode;
     merg<TSub extends Node0>(sub: TSub, peerIdx?: number): TNode;
