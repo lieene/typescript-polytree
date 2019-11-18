@@ -31,8 +31,8 @@ test("poly tree test", () =>
     console.log(t.root.child(1)!.subTreeInfo());
 
     let t4s = tr.Simplify(t4);
-    let f = ft<nt.Name>(nt.CreateName('the forest'));
-    f.trees.push(t2, t3, t4);
+    let f = ft<nt.Name, nt.Name, nt.Name>(nt.CreateName('the forest'));
+    f.trees.push(t2 as any, t3 as any, t4 as any);
 
 
 
