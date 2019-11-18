@@ -42,4 +42,6 @@ test("poly tree test", () =>
     let dd: Tree.MorphNode<{ a: number }, { b: string }> = L.Any;
     let e = Tree.Nomalize(a);
     let g = Tree.Edit(b);
+    g.setLogger(()=>"logloglog");
+    console.log(g.info(false));
 });
