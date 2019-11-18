@@ -42,7 +42,7 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "@lieene/ts-utility": "^1.0.13",
+    "@lieene/ts-utility": "^1.0.14",
     "@types/node": "^12.12.7"
   },
   "files": [
