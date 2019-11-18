@@ -34,6 +34,7 @@
   "homepage": "https://github.com/lieene/typescript-polytree#readme",
   "devDependencies": {
     "@types/jest": "^24.0.22",
+    "@types/node": "^12.12.8",
     "jest": "^24.9.0",
     "prettier": "^1.19.1",
     "ts-jest": "^24.1.0",
@@ -42,8 +43,7 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "@lieene/ts-utility": "^1.0.14",
-    "@types/node": "^12.12.7"
+    "@lieene/ts-utility": "^1.1.0"
   },
   "files": [
     "out/**/*"
