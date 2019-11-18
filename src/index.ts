@@ -8,6 +8,7 @@
 import '@lieene/ts-utility';
 import * as L from '@lieene/ts-utility';
 import { create } from 'domain';
+import { Node } from '@babel/types';
 
 namespace core
 {
@@ -183,9 +184,13 @@ namespace core
     polymorph<N extends object>(): Typing.IForest<Typing.MorphTreeN<N>>;
     polymorph<N extends object, T extends object>(): Typing.IForest<Typing.MorphTree<N, T>>;
     polymorph<N extends object, T extends object, F extends object>(): L.Extend<Typing.IForest<Typing.MorphTree<N, T>>, F>;
-    polymorph<F extends object>(...forestExt: F[]): L.Extend<Typing.IForest<Typing.Tree>, F>;
-    polymorph<T extends object, F extends object>(treeExt: (node: CTree) => T, ...forestExt: F[]): L.Extend<Typing.IForest<Typing.MorphTreeT<T>>, F>;
-    polymorph<N extends object, T extends object, F extends object>(nodeExt: (node: CNode) => N, treeExt: (node: CTree) => T, ...forestExt: F[]): L.Extend<Typing.IForest<Typing.MorphTree<N, T>>, F>;
+    polymorph<F extends object>(forestExt: F): L.Extend<Typing.IForest<Typing.Tree>, F>;
+    polymorph<F extends object[]>(...forestExt: F): L.Extend<Typing.IForest<Typing.Tree>, L.MergTupleType<F>>;
+    polymorph<N extends object, T extends object, F extends object>(nodeExt: (node: CNode) => N, treeExt: (node: CTree) => T, forestExt: F)
+      : L.Extend<Typing.IForest<Typing.MorphTree<N, T>>, F>;
+    polymorph<T extends object, F extends object[]>(treeExt: (node: CTree) => T, ...forestExt: F): L.Extend<Typing.IForest<Typing.MorphTreeT<T>>, L.MergTupleType<F>>;
+    polymorph<N extends object, T extends object, F extends object[]>(nodeExt: (node: CNode) => N, treeExt: (node: CTree) => T, ...forestExt: F)
+      : L.Extend<Typing.IForest<Typing.MorphTree<N, T>>, L.MergTupleType<F>>;
     polymorph(...ext: any[]): any
     {
       let [first, second, ...rest] = ext;
@@ -199,7 +204,8 @@ namespace core
             t.polymorph(first, tx);
           });
           ext = rest;
-        } else
+        }
+        else
         {
           this.trees.forEach(t => t.polymorph(first));
           ext = [second, rest];
@@ -536,20 +542,19 @@ namespace func
     });
     return this;
   }
-
-  export function poly<T extends object>(this: CTree, ...ext: T[]): L.Extend<CTree, T>;
-
-  export function poly<T extends object>(this: CNode, ...ext: T[]): L.Extend<CNode, T>;
-  export function poly<T extends object>(this: CNode, ext: (node: CNode) => T): L.Extend<CNode, T>;
+  export function poly<T extends object>(this: CTree, ext?: T): L.Extend<CTree, T>;
+  export function poly<T extends object>(this: CNode, ext?: (node: CNode) => T): L.Extend<CNode, T>;
+  export function poly<T extends object[]>(this: CTree, ...ext: T): L.Extend<CTree, L.MergTupleType<T>>;
+  export function poly<T extends object[]>(this: CNode, ...ext: T): L.Extend<CNode, L.MergTupleType<T>>;
   export function poly(this: CNode | CTree, ...ext: any[]): any
   {
     return polyAny.call(this, ...ext);
   }
 
-  export function morph<T extends object>(this: CTree, ...ext: T[]): MorphTreeTX<T>;
-
-  export function morph<T extends object>(this: CNode, ...ext: T[]): MorphNodeNX<T>;
-  export function morph<T extends object>(this: CNode, ext: (node: CNode) => T): MorphNodeNX<T>;
+  export function morph<T extends object>(this: CTree, ext?: T): MorphTreeTX<T>;
+  export function morph<T extends object>(this: CNode, ext?: (node: CNode) => T): MorphNodeNX<T>;
+  export function morph<T extends object[]>(this: CTree, ...ext: T): MorphTreeTX<L.MergTupleType<T>>;
+  export function morph<T extends object[]>(this: CNode, ...ext: T): MorphNodeNX<L.MergTupleType<T>>;
   export function morph(this: CNode | CTree, ...ext: any[]): any
   {
     return polyAny.call(this, ...ext);
@@ -588,14 +593,11 @@ namespace func
     return L.NotFunction<T>(ext) ? ext : ext(node);
   }
 
-  // export interface Router<TD, TB, TU>
-  // { down: TD; back: TB; up: TU | undefined; }
-
-  export function push(this: CNode | CTree): CNode; //& Router<CNode, CNode, CNode>;
-  export function push<T extends object>(this: CNode | CTree, ...ext: T[]): L.Extend<CNode, T>; //& Router<L.Extend<CNode,T>, CNode, CNode>;
-  export function push<T extends object>(this: CNode | CTree, ext: (node: CNode) => T): L.Extend<CNode, T>; //& Router<L.Extend<CNode,T>, CNode, CNode>;
-  export function push<T extends object>(this: CNode | CTree, morph: 'morph', ...ext: T[]): MorphNodeNX<T>; //& Router<MorphNodeX<T>, MorphNodeX<T>, MorphNodeX<T>>;
-  export function push<T extends object>(this: CNode | CTree, morph: 'morph', ext: (node: CNode) => T): MorphNodeNX<T>; //& Router<MorphNodeX<T>, MorphNodeX<T>, MorphNodeX<T>>;
+  export function push(this: CNode | CTree): CNode;
+  export function push<T extends object>(this: CNode | CTree, ext?: (node: CNode) => T): L.Extend<CNode, T>;
+  export function push<T extends object>(this: CNode | CTree, morph: 'morph', ext?: (node: CNode) => T): MorphNodeNX<T>;
+  export function push<T extends object[]>(this: CNode | CTree, ...ext: T): L.Extend<CNode, L.MergTupleType<T>>;
+  export function push<T extends object[]>(this: CNode | CTree, morph: 'morph', ...ext: T): MorphNodeNX<L.MergTupleType<T>>;
   export function push(this: CNode | CTree, ...ext: any[]): any
   {
     let parent: CNode;
@@ -620,16 +622,19 @@ namespace func
     return node;
     //return L.assign(node, { dive: node, back: this, up: parent.parent }, L.AssignFilter.override);
   }
-  export function add(this: CNode): CNode; //& Router<CNode, CNode, CNode>;
-  export function add(this: CTree): CTree; //& Router<CNode, CTree, CNode>;
-  export function add<T extends object>(this: CNode, ...ext: T[]): L.Extend<CNode, T>; //& Router<L.Extend<CNode,T>, CNode, CNode>;
-  export function add<T extends object>(this: CTree, ...ext: T[]): CTree; //& Router<L.Extend<CNode,T>, CTree, CNode>;
-  export function add<T extends object>(this: CNode, ext: (node: CNode) => T): L.Extend<CNode, T>; //& Router<L.Extend<CNode,T>, CNode, CNode>;
-  export function add<T extends object>(this: CTree, ext: (node: CNode) => T): CTree; //& Router<L.Extend<CNode,T>, CTree, CNode>;
-  export function add<T extends object>(this: CNode, morph: 'morph', ...ext: T[]): MorphNodeNX<T>; //& Router<MorphNodeX<T>, MorphNodeX<T>, MorphNodeX<T>>;
-  export function add<T extends object>(this: CTree, morph: 'morph', ...ext: T[]): CTree; //& Router<MorphNodeX<T>, CTree, MorphNodeX<T>>;
-  export function add<T extends object>(this: CNode, morph: 'morph', ext: (node: CNode) => T): MorphNodeNX<T>; //& Router<MorphNodeX<T>, MorphNodeX<T>, MorphNodeX<T>>;
-  export function add<T extends object>(this: CTree, morph: 'morph', ext: (node: CNode) => T): CTree; //& Router<MorphNodeX<T>, CTree, MorphNodeX<T>>;
+  export function add(this: CNode): CNode;
+  export function add(this: CTree): CTree;
+
+  export function add<N extends object>(this: CNode, morph: 'morph', ext?: (node: CNode) => N): MorphNodeNX<N>;
+  export function add<T extends object>(this: CTree, morph: 'morph', ext?: (node: CNode) => T): MorphTreeNX<T>;
+
+  export function add<N extends object>(this: CNode, ext?: (node: CNode) => N): L.Extend<CNode, N>;
+  export function add<T extends object>(this: CTree, ext?: (node: CNode) => T): L.Extend<CTree, T>;
+
+  export function add<N extends object[]>(this: CNode, morph: 'morph', ...ext: N): MorphNodeNX<L.MergTupleType<N>>;
+  export function add<T extends object[]>(this: CTree, morph: 'morph', ...ext: T): MorphTreeNX<L.MergTupleType<T>>;
+  export function add<N extends object[]>(this: CNode, ...ext: N): L.Extend<CNode, L.MergTupleType<N>>;
+  export function add<T extends object[]>(this: CTree, ...ext: T): L.Extend<CTree, L.MergTupleType<T>>;
   export function add(this: CNode | CTree, ...ext: any[]): any
   {
     let parent: CNode;
@@ -655,9 +660,9 @@ namespace func
     //return L.assign(node, { dive: node, back: this, up: parent.parent }, L.AssignFilter.override);
   }
 
-  export function polySub<T extends object>(this: CNode, ...ext: T[]): L.Extend<CNode, T>;
-  export function polySub<T extends object>(this: CNode, ext: (node: CNode) => T): L.Extend<CNode, T>;
-  export function polySub(this: CNode, ...ext: any[]): any
+  export function polySub<T extends object>(this: CNode, ext?: (node: CNode) => T): L.Extend<CNode, T>;
+  export function polySub<T extends object[]>(this: CNode, ...ext: T): L.Extend<CNode, L.MergTupleType<T>>;
+  export function polySub(this: CNode, ...ext: any[]): CNode
   {
     let nodes = this.tree.nodes;
     let range = this.subTreeRange;
@@ -668,8 +673,8 @@ namespace func
     return this;
   }
 
-  export function morphSub<T extends object>(this: CNode, ...ext: T[]): MorphNodeNX<T>;
-  export function morphSub<T extends object>(this: CNode, ext: (node: CNode) => T): MorphNodeNX<T>;
+  export function morphSub<T extends object>(this: CNode, ext?: (node: CNode) => T): MorphNodeNX<T>;
+  export function morphSub<T extends object[]>(this: CNode, ...ext: T): MorphNodeNX<L.MergTupleType<T>>;
   export function morphSub(this: CNode, ...ext: any[]): any
   {
     return this.polySub(...ext);
@@ -679,9 +684,13 @@ namespace func
   // polymorph<T extends object>(...ext: T[]): TTree & MorphTreeN<T>;
   // polymorph<N extends object, T extends object>(nodeExt: (node: TNode) => N, ...ext: T[]): TTree & MorphTree<N, T>;
 
-  export function polymorph<N extends object>(this: CTree, nodeExt: (node: CNode) => N): CTree & MorphTreeNX<N>;
-  export function polymorph<T extends object>(this: CTree, ...ext: T[]): CTree & MorphTreeTX<T>;
-  export function polymorph<N extends object, T extends object>(this: CTree, nodeExt: (node: CNode) => N, ...ext: T[]): MorphTreeX<N, T>;
+  export function polymorph<N extends object, T extends object>(this: CTree): MorphTreeX<N, T>;
+  export function polymorph<T extends object>(this: CTree, ext?: T): MorphTreeTX<T>;
+  export function polymorph<N extends object>(this: CTree, nodeExt: (node: CNode) => N): MorphTreeNX<N>;
+  export function polymorph<N extends object, T extends object>(this: CTree, nodeExt: (node: CNode) => N): MorphTreeX<N, T>;
+  export function polymorph<N extends object, T extends object>(this: CTree, nodeExt: (node: CNode) => N, ext: T): MorphTreeX<N, T>;
+  export function polymorph<N extends object, T extends object[]>(this: CTree, nodeExt: (node: CNode) => N, ...ext: T): MorphTreeX<N, L.MergTupleType<T>>;
+  export function polymorph<T extends object[]>(this: CTree, ...ext: T): MorphTreeTX<L.MergTupleType<T>>;
   export function polymorph(this: CTree, ...ext: any[]): any
   {
     let nodes = this.nodes;
@@ -828,12 +837,14 @@ namespace func
   }
 
   export function merg(this: CTree | CNode, sub: CNode): CNode;
-  export function merg(this: CTree | CNode, sub: CNode, peerIdx?: number): CNode;
+  export function merg(this: CTree | CNode, sub: CNode, tartPeerIdx?: number): CNode;
   export function merg(this: CTree | CNode, sub: CTree, cloneSub?: boolean): CNode;
-  export function merg(this: CTree | CNode, sub: CTree, peerIdx?: number, cloneSub?: boolean): CNode;
+  export function merg(this: CTree | CNode, sub: CTree, tartPeerIdx?: number, cloneSub?: boolean): CNode;
   export function merg(this: CTree | CNode, sub: CTree | CNode, tartPeerIdx: number | undefined | boolean = undefined, cloneSub: boolean = true): CNode
   {
+    if (sub === undefined) { throw new Error("Merg Child is undefined"); }
     let [srcSubRoot, srcSubNodes, srcSubTree] = IsTree(sub) ? [sub.root, sub.nodes, sub] : [sub, sub.tree.nodes, sub.tree];
+    if (srcSubRoot === undefined) { throw new Error("Merg Child tree is empty"); }
     let subIsNode = !srcSubRoot.isRoot;
     let subTreeCount = srcSubRoot.subTreeRange.length;
 
@@ -888,7 +899,8 @@ namespace func
       {
         newSubNodes[i].childrenID = srcSubNodes[i].childrenID.map(i => i + src2tarOffet);
       }
-    } else
+    }
+    else
     {
       newSub = srcSubRoot;
       newSubNodes = srcSubNodes;
@@ -1157,21 +1169,21 @@ namespace Typing
     nodeInfo(detail?: boolean): string;
 
     push(): TNode;
+    push<N extends object>(ext?: (node: TNode) => N): L.Extend<TNode, N>;
+    push<N extends object>(morph: 'morph', ext?: (node: TNode) => N): MorphNodeX<L.Extend<ExtOverNodeN<TNode>, N>, ExtOverTreeT<TTree>>;
+    push<N extends object[]>(morph: 'morph', ...ext: N): MorphNodeX<L.Extend<ExtOverNodeN<TNode>, L.MergTupleType<N>>, ExtOverTreeT<TTree>>;
     push<N extends object[]>(...ext: N): L.Extend<TNode, L.MergTupleType<N>>;
-    push<N extends object>(ext: (node: TNode) => N): L.Extend<TNode, N>;
-    push<N extends object[]>(morph: 'morph', ...ext: N[]): MorphNodeX<L.Extend<ExtOverNodeN<TNode>, L.MergTupleType<N>>, ExtOverTreeT<TTree>>;
-    push<N extends object>(morph: 'morph', ext: (node: TNode) => N): MorphNodeX<L.Extend<ExtOverNodeN<TNode>, N>, ExtOverTreeT<TTree>>;
 
     add(): TNode;
-    add<N extends object[]>(...ext: N): TNode;
-    add<N extends object>(ext: (node: TNode) => N): TNode;
+    add<N extends object>(ext?: (node: TNode) => N): TNode;
+    add<N extends object>(morph: 'morph', ext?: (node: TNode) => N): MorphNodeX<L.Extend<ExtOverNodeN<TNode>, N>, ExtOverTreeT<TTree>>;
     add<N extends object[]>(morph: 'morph', ...ext: N): MorphNodeX<L.Extend<ExtOverNodeN<TNode>, L.MergTupleType<N>>, ExtOverTreeT<TTree>>;
-    add<N extends object>(morph: 'morph', ext: (node: TNode) => N): MorphNodeX<L.Extend<ExtOverNodeN<TNode>, N>, ExtOverTreeT<TTree>>;
+    add<N extends object[]>(...ext: N): TNode;
 
     merg<TSub extends Node0>(sub: TSub): TNode;
-    merg<TSub extends Node0>(sub: TSub, peerIdx?: number): TNode;
+    merg<TSub extends Node0>(sub: TSub, tartPeerIdx?: number): TNode;
     merg<TSub extends Tree0>(sub: TSub, cloneSub?: boolean): TNode;
-    merg<TSub extends Tree0>(sub: TSub, peerIdx?: number, cloneSub?: boolean): TNode;
+    merg<TSub extends Tree0>(sub: TSub, tartPeerIdx?: number, cloneSub?: boolean): TNode;
 
     remove(): TNode[];
 
@@ -1206,21 +1218,21 @@ namespace Typing
     info(detail?: boolean): string;
 
     push(): TNode;
+    push<N extends object>(ext?: (node: TNode) => N): L.Extend<TNode, N>;
+    push<N extends object>(morph: 'morph', ext?: (node: TNode) => N): MorphNodeX<L.Extend<ExtOverNodeN<TNode>, N>, ExtOverTreeT<TTree>>;
     push<N extends object[]>(...ext: N): L.Extend<TNode, L.MergTupleType<N>>;
-    push<N extends object>(ext: (node: TNode) => N): L.Extend<TNode, N>;
     push<N extends object[]>(morph: 'morph', ...ext: N): MorphNodeX<L.Extend<ExtOverNodeN<TNode>, L.MergTupleType<N>>, ExtOverTreeT<TTree>>;
-    push<N extends object>(morph: 'morph', ext: (node: TNode) => N): MorphNodeX<L.Extend<ExtOverNodeN<TNode>, N>, ExtOverTreeT<TTree>>;
 
     add(): TTree;
+    add<N extends object>(ext?: (node: TNode) => N): TTree;
+    add<N extends object>(morph: 'morph', ext?: (node: TNode) => N): MorphTreeX<L.Extend<ExtOverNodeN<TNode>, N>, ExtOverTreeT<TTree>>;
     add<N extends object[]>(...ext: N): TTree;
-    add<N extends object>(ext: (node: TNode) => N): TTree;
     add<N extends object[]>(morph: 'morph', ...ext: N): MorphTreeX<L.Extend<ExtOverNodeN<TNode>, L.MergTupleType<N>>, ExtOverTreeT<TTree>>;
-    add<N extends object>(morph: 'morph', ext: (node: TNode) => N): MorphTreeX<L.Extend<ExtOverNodeN<TNode>, N>, ExtOverTreeT<TTree>>;
 
     merg<TSub extends Node0>(sub: TSub): TNode;
-    merg<TSub extends Node0>(sub: TSub, peerIdx?: number): TNode;
+    merg<TSub extends Node0>(sub: TSub, tartPeerIdx?: number): TNode;
     merg<TSub extends Tree0>(sub: TSub, cloneSub?: boolean): TNode;
-    merg<TSub extends Tree0>(sub: TSub, peerIdx?: number, cloneSub?: boolean): TNode;
+    merg<TSub extends Tree0>(sub: TSub, tartPeerIdx?: number, cloneSub?: boolean): TNode;
 
     poly<T extends object>(): L.Extend<TTree, T>;
     poly<T extends object[]>(...ext: T): L.Extend<TTree, L.MergTupleType<T>>;
@@ -1228,11 +1240,12 @@ namespace Typing
     morph<T extends object>(): MorphTreeX<ExtOverNodeN<TNode>, L.Extend<ExtOverTreeT<TTree>, T>>;
     morph<T extends object[]>(...ext: T): MorphTreeX<ExtOverNodeN<TNode>, L.Extend<ExtOverTreeT<TTree>, L.MergTupleType<T>>>;
 
-    polymorph<N extends object, T extends object>(): MorphTreeS<L.Extend<ExtOverNodeN<TNode>, N>, L.Extend<ExtOverTreeT<TTree>, T>>;
-    polymorph<N extends object>(nodeExt: (node: TNode) => N): MorphTreeX<ExtOverTreeT<TTree>, L.Extend<ExtOverNodeN<TNode>, N>>;
-    polymorph<N extends object[]>(...ext: N): MorphTreeX<ExtOverTreeT<TTree>, L.Extend<ExtOverNodeN<TNode>, L.MergTupleType<N>>>;
-    polymorph<N extends object, T extends object[]>(nodeExt?: (node: TNode) => N, ...ext: T):
-      MorphTreeX<L.Extend<ExtOverNodeN<TNode>, N>, L.Extend<ExtOverTreeT<TTree>, L.MergTupleType<T>>>;
+    polymorph<N extends object, T extends object>(): MorphTreeX<L.Extend<ExtOverNodeN<TNode>, N>, L.Extend<ExtOverTreeT<TTree>, T>>;
+    polymorph<N extends object>(nodeExt: (node: TNode) => N): MorphTreeX<L.Extend<ExtOverNodeN<TNode>, N>, ExtOverTreeT<TTree>>;
+    polymorph<T extends object>(ext?: T): MorphTreeX<ExtOverNodeN<TNode>, L.Extend<ExtOverTreeT<TTree>, T>>;
+    polymorph<N extends object, T extends object>(nodeExt: (node: TNode) => N, ext: T): MorphTreeX<L.Extend<ExtOverNodeN<TNode>, N>, L.Extend<ExtOverTreeT<TTree>, T>>;
+    polymorph<N extends object, T extends object>(nodeExt: (node: TNode) => N): MorphTreeX<L.Extend<ExtOverNodeN<TNode>, N>, L.Extend<ExtOverTreeT<TTree>, T>>;
+    polymorph<T extends object[]>(...ext: T): MorphTreeX<ExtOverNodeN<TNode>, L.Extend<ExtOverTreeT<TTree>, L.MergTupleType<T>>>;
   }
   //---------------------------------------------------------------------------------------------------------------------------------
 
@@ -1421,12 +1434,21 @@ namespace Typing
     polymorph<N extends object, T extends object, F extends object>():
       L.Extend<IForest<MorphTreeX<L.Extend<ExtOverNodeT<TTree>, N>, L.Extend<ExtOverTreeT<TTree>, T>>>, F>;
 
-    polymorph<F extends object[]>(...forestExt: F):
-      L.Extend<IForest<TTree>, L.MergTupleType<F>>;
-    polymorph<T extends object, F extends object[]>(treeExt: (node: CTree) => T, ...forestExt: F):
-      L.Extend<IForest<MorphTreeX<ExtOverNodeT<TTree>, L.Extend<ExtOverTreeT<TTree>, T>>>, L.MergTupleType<F>>;
+    polymorph<F extends object>(forestExt: F): L.Extend<IForest<TTree>, F>;
+
+    polymorph<T extends object, F extends object>(treeExt: (node: CTree) => T, forestExt: F):
+      L.Extend<IForest<MorphTreeX<ExtOverNodeT<TTree>, L.Extend<ExtOverTreeT<TTree>, T>>>, F>;
+
+    polymorph<N extends object, T extends object, F extends object>(nodeExt: (node: CNode) => N, treeExt: (node: CTree) => T, forestExt: F):
+      L.Extend<IForest<MorphTreeX<L.Extend<ExtOverNodeT<TTree>, N>, L.Extend<ExtOverTreeT<TTree>, T>>>, F>;
+
     polymorph<N extends object, T extends object, F extends object[]>(nodeExt: (node: CNode) => N, treeExt: (node: CTree) => T, ...forestExt: F):
       L.Extend<IForest<MorphTreeX<L.Extend<ExtOverNodeT<TTree>, N>, L.Extend<ExtOverTreeT<TTree>, T>>>, L.MergTupleType<F>>;
+
+    polymorph<T extends object, F extends object[]>(treeExt: (node: CTree) => T, ...forestExt: F):
+      L.Extend<IForest<MorphTreeX<ExtOverNodeT<TTree>, L.Extend<ExtOverTreeT<TTree>, T>>>, L.MergTupleType<F>>;
+
+    polymorph<F extends object[]>(...forestExt: F): L.Extend<IForest<TTree>, L.MergTupleType<F>>;
   }
 
   export type Forest0 = IForest<Tree0>;
@@ -1479,17 +1501,53 @@ namespace Extra
   }
 }
 
+export function Tree(mode: "Simple"): Typing.TreeS;
+export function Tree(mode: "Reandonly"): Typing.Tree;
+export function Tree(mode: "Editable"): Typing.TreeX;
 export function Tree(): Typing.TreeX;
-export function Tree<N extends object>(...nodeExt: N[]): Typing.MorphTreeNX<N>;
-export function Tree(...ext: any[]): Typing.TreeX
+
+export function Tree<N extends object, T extends object>(mode: "Simple", nodeExt: (node: any) => N, treeExt: T): Typing.MorphTreeS<N, T>;
+export function Tree<N extends object, T extends object>(mode: "Reandonly", nodeExt: (node: any) => N, treeExt: T): Typing.MorphTree<N, T>;
+export function Tree<N extends object, T extends object>(mode: "Editable", nodeExt: (node: any) => N, treeExt: T): Typing.MorphTreeX<N, T>;
+export function Tree<N extends object, T extends object>(nodeExt: (node: any) => N, treeExt: T): Typing.MorphTreeX<N, T>;
+
+export function Tree<T extends object>(mode: "Simple", treeExt: T): Typing.MorphTreeTS<T>;
+export function Tree<T extends object>(mode: "Reandonly", treeExt: T): Typing.MorphTreeT<T>;
+export function Tree<T extends object>(mode: "Editable", treeExt: T): Typing.MorphTreeTX<T>;
+export function Tree<T extends object>(treeExt: T): Typing.MorphTreeTX<T>;
+
+export function Tree<N extends object, T extends object[]>(mode: "Simple", nodeExt: (node: any) => N, ...treeExts: T): Typing.MorphTreeS<N, L.MergTupleType<T>>;
+export function Tree<N extends object, T extends object[]>(mode: "Reandonly", nodeExt: (node: any) => N, ...treeExts: T): Typing.MorphTree<N, L.MergTupleType<T>>;
+export function Tree<N extends object, T extends object[]>(mode: "Editable", nodeExt: (node: any) => N, ...treeExts: T): Typing.MorphTreeX<N, L.MergTupleType<T>>;
+export function Tree<N extends object, T extends object[]>(nodeExt: (node: any) => N, ...treeExts: T): Typing.MorphTreeX<N, L.MergTupleType<T>>;
+
+
+export function Tree<T extends object[]>(mode: "Simple", ...treeExt: T): Typing.MorphTreeTS<L.MergTupleType<T>>;
+export function Tree<T extends object[]>(mode: "Reandonly", ...treeExt: T): Typing.MorphTreeT<L.MergTupleType<T>>;
+export function Tree<T extends object[]>(mode: "Editable", ...treeExt: T): Typing.MorphTreeTX<L.MergTupleType<T>>;
+export function Tree<T extends object[]>(...treeExt: T): Typing.MorphTreeTX<L.MergTupleType<T>>;
+export function Tree(...ext: any[]): any
 {
   let t = new core.CTree(false);
   if (ext.length > 0)
   {
-    t.root.morph(...ext);
+    let [first, ...rest] = ext;
+    if (first === "Simple" || first === "Reandonly" || first === "Editable")
+    {
+      if (rest.length <= 0) { return t; }
+      [first, ...rest] = rest;
+    }
+    if (L.IsFunction(first))
+    {
+      let nx = first(t.root);
+      t.root.morph(nx);
+      t.morph(...rest);
+    }
+    else { t.morph(...ext); }
   }
-  return t as any;
+  return t;
 }
+
 export namespace Tree
 {
   export type CNode = core.CNode;
@@ -1548,7 +1606,9 @@ export namespace Tree
 export function Forest(): Typing.Forest;
 export function Forest<N extends object, T extends object>(): Typing.ForestNT<N, T>;
 export function Forest<N extends object, T extends object, F extends object>(): Typing.ForestNTF<N, T, F>;
+export function Forest<N extends object, F extends object>(fExt: F): Typing.ForestNF<N, F>;
 export function Forest<N extends object, F extends object[]>(...fExt: F): Typing.ForestNF<N, L.MergTupleType<F>>;
+export function Forest<F extends object>(fExt: F): Typing.ForestF<F>;
 export function Forest<F extends object[]>(...fExt: F): Typing.ForestF<L.MergTupleType<F>>;
 export function Forest(...fExt: object[]): any
 {
@@ -1587,42 +1647,40 @@ export namespace Named
   export type NamedTree = Typing.MorphTree<Extra.Name, Extra.Name>;
   export type NamedTreeX = Typing.MorphTreeX<Extra.Name, Extra.Name>;
 
-  export type NamedNodeS = Typing.MorphNodeS<Extra.Name, Extra.Name>;
-  export type NamedNode = Typing.MorphNode<Extra.Name, Extra.Name>;
-  export type NamedNodeX = Typing.MorphNodeX<Extra.Name, Extra.Name>;
+  export type NamedNodeS = Typing.MorphNodeNS<Extra.Name>;
+  export type NamedNode = Typing.MorphNodeN<Extra.Name>;
+  export type NamedNodeX = Typing.MorphNodeNX<Extra.Name>;
 
-  export type NamedForest = Typing.ForestNF<Extra.Name, Extra.Name>;
+  export type NamedForest = Typing.ForestNTF<Extra.Name, Extra.Name, Extra.Name>;
 
 
   export import Name = Extra.Name;
 
+  export function Name<TForest extends Typing.Forest0>(node: TForest, name?: string): NamedForest;
+  export function Name<TTree extends Typing.Tree0>(node: TTree, name?: string): NamedTree;
   export function Name<TNode extends Typing.Node0>(tree: TNode, name: string | undefined): NamedNode;
-  export function Name<TTree extends Typing.Tree0>(node: TTree, name: string | undefined): NamedTree;
-  export function Name<TForest extends Typing.Forest0>(node: TForest, name: string | undefined): NamedForest;
-  export function Name<O extends Typing.Tree0 | Typing.Node0 | Typing.Forest0>(target: O, name: string | undefined): any
+  export function Name<O extends Typing.Tree0 | Typing.Node0 | Typing.Forest0>(target: O, name: string | undefined = undefined): any
   {
-    let n=CreateName(name);
-    let un=CreateName(undefined);
+    let named = CreateName(name);
+    let unnamed = CreateName(undefined);
     if (func.IsNode(target))
     {
-      let t = target as unknown as core.CNode;
-      return t.findChild(n => n.poly<Name>().name === name, true);
+      let tree = target.tree as core.CTree;
+      tree.poly(unnamed);
+      (target as unknown as core.CNode).poly(named);
     }
     else if (func.IsTree(target))
-    { return target.findNode(n => n.poly<Name>().name === name); }
+    {
+      (target as unknown as core.CTree).poly(unnamed);
+      target.nodes.forEach(n => (n as unknown as core.CNode).poly(unnamed));
+    }
     else
     {
-      let ret: Array<CNode> = [];
-      let trees = target.trees;
-      for (let i = 0, len = trees.length; i < len; i++)
-      {
-        ret.push(...trees[i].findNode(n => n.poly<Name>().name === name));
-      }
-      return ret as any;
+      let f = target as unknown as core.CForest;
+      f.polymorph<Extra.Name, Extra.Name, Extra.Name[]>((n: core.CNode) => unnamed, (t: core.CTree) => unnamed, named);
     }
+    return target;
   }
   export function CreateName(name: string | undefined): Extra.Name
-  {
-    return { name, findByName: Extra.findByName, toString: Extra.nameString };
-  }
+  { return { name, findByName: Extra.findByName, toString: Extra.nameString }; }
 }
