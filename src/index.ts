@@ -172,8 +172,7 @@ namespace core {
       treeExt: (node: CTree) => T,
       ...forestExt: F
     ): L.Extend<Typing.IForest<Typing.MorphTree<N, T>>, L.MergTupleType<F>>;
-    polymorph(...ext: any[]): any
-    {
+    polymorph(...ext: any[]): any {
       let [first, second, ...rest] = ext;
       if (L.IsFunction(first)) {
         if (L.IsFunction(second)) {
@@ -182,8 +181,7 @@ namespace core {
             t.polymorph(first, tx);
           });
           ext = rest;
-        } else
-        {
+        } else {
           this.trees.forEach(t => t.polymorph(first));
           ext = [second, rest];
         }
@@ -704,15 +702,12 @@ namespace func {
   export function merg(this: CTree | CNode, sub: CNode, tartPeerIdx?: number): CNode;
   export function merg(this: CTree | CNode, sub: CTree, cloneSub?: boolean): CNode;
   export function merg(this: CTree | CNode, sub: CTree, tartPeerIdx?: number, cloneSub?: boolean): CNode;
-  export function merg(this: CTree | CNode, sub: CTree | CNode, tartPeerIdx: number | undefined | boolean = undefined, cloneSub: boolean = true): CNode
-  {
-    if (sub === undefined)
-    {
+  export function merg(this: CTree | CNode, sub: CTree | CNode, tartPeerIdx: number | undefined | boolean = undefined, cloneSub: boolean = true): CNode {
+    if (sub === undefined) {
       throw new Error('Merg Child is undefined');
     }
     let [srcSubRoot, srcSubNodes, srcSubTree] = IsTree(sub) ? [sub.root, sub.nodes, sub] : [sub, sub.tree.nodes, sub.tree];
-    if (srcSubRoot === undefined)
-    {
+    if (srcSubRoot === undefined) {
       throw new Error('Merg Child tree is empty');
     }
     let subIsNode = !srcSubRoot.isRoot;
@@ -759,8 +754,7 @@ namespace func {
       for (let i = 0; i < subTreeCount; i++) {
         newSubNodes[i].childrenID = srcSubNodes[i].childrenID.map(i => i + src2tarOffet);
       }
-    } else
-    {
+    } else {
       newSub = srcSubRoot;
       newSubNodes = srcSubNodes;
 
@@ -1308,16 +1302,12 @@ namespace Extra {
     toString(): string;
   }
 
-  export function findByName(this: CNode | CTree | CForest, name: string | undefined): Array<MorphNodeN<Name>>
-  {
-    if (func.IsNode(this))
-    {
+  export function findByName(this: CNode | CTree | CForest, name: string | undefined): Array<MorphNodeN<Name>> {
+    if (func.IsNode(this)) {
       return this.findChild(n => n.poly<Name>().name === name, true);
-    } else if (func.IsTree(this))
-    {
+    } else if (func.IsTree(this)) {
       return this.findNode(n => n.poly<Name>().name === name);
-    } else
-    {
+    } else {
       let ret: Array<CNode> = [];
       let trees = this.trees;
       for (let i = 0, len = trees.length; i < len; i++) {
@@ -1356,10 +1346,8 @@ export function Tree(...ext: any[]): any {
   let t = new core.CTree(false);
   if (ext.length > 0) {
     let [first, ...rest] = ext;
-    if (first === 'Simple' || first === 'Reandonly' || first === 'Editable')
-    {
-      if (rest.length <= 0)
-      {
+    if (first === 'Simple' || first === 'Reandonly' || first === 'Editable') {
+      if (rest.length <= 0) {
         return t;
       }
       [first, ...rest] = rest;
@@ -1368,8 +1356,7 @@ export function Tree(...ext: any[]): any {
       let nx = first(t.root);
       t.root.morph(nx);
       t.morph(...rest);
-    } else
-    {
+    } else {
       t.morph(...ext);
     }
   }
@@ -1463,8 +1450,7 @@ export namespace Forest {
 
 export function Named(rootName?: string, treeName?: string): Typing.MorphTreeNX<Named.Name> {
   let t: core.CTree = Tree(Named.CreateName(rootName)) as any;
-  if (treeName !== undefined)
-  {
+  if (treeName !== undefined) {
     t.morph(Named.CreateName(treeName));
   }
   return t as any;
@@ -1493,12 +1479,10 @@ export namespace Named {
       let tree = target.tree as core.CTree;
       tree.poly(unnamed);
       ((target as unknown) as core.CNode).poly(named);
-    } else if (func.IsTree(target))
-    {
+    } else if (func.IsTree(target)) {
       ((target as unknown) as core.CTree).poly(unnamed);
       target.nodes.forEach(n => ((n as unknown) as core.CNode).poly(unnamed));
-    } else
-    {
+    } else {
       let f = (target as unknown) as core.CForest;
       f.polymorph<Extra.Name, Extra.Name, Extra.Name[]>(
         (n: core.CNode) => unnamed,
@@ -1508,8 +1492,7 @@ export namespace Named {
     }
     return target;
   }
-  export function CreateName(name: string | undefined): Extra.Name
-  {
+  export function CreateName(name: string | undefined): Extra.Name {
     return { name, findByName: Extra.findByName, toString: Extra.nameString };
   }
 }
