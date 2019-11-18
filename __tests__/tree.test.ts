@@ -1,21 +1,21 @@
-import { Tree as tr, Forest as ft, NamedTree as nt } from "../src";
+import { Tree as tr, Forest as ft, Named as nt } from "../src";
 import * as L from "@lieene/ts-utility";
 
 test("poly tree test", () =>
 {
-    let t = tr(nt.named("I'am the root"));
-    t.push(nt.named('1st node')).add(nt.named('c00')).add(nt.named('c01')).add(nt.named('c02'));
-    t.push(nt.named('2nd node'));
-    t.add(nt.named('3rd node'));
-    t.add(nt.named('4th node'));
-    t.root.child(1)!.push(nt.named('C10')).push(nt.named('C100'));
-    t.root.child(2)!.add(nt.named('C20')).add(nt.named('C21'));
+    let t = tr(nt.CreateName("I'am the root"));
+    t.push(nt.CreateName('1st node')).add(nt.CreateName('c00')).add(nt.CreateName('c01')).add(nt.CreateName('c02'));
+    t.push(nt.CreateName('2nd node'));
+    t.add(nt.CreateName('3rd node'));
+    t.add(nt.CreateName('4th node'));
+    t.root.child(1)!.push(nt.CreateName('C10')).push(nt.CreateName('C100'));
+    t.root.child(2)!.add(nt.CreateName('C20')).add(nt.CreateName('C21'));
     console.log(t.info(true));
     let t2 = t.clone(true);
     console.log(t2.info(true));
     let t3 = t.clone(true, n => n.depth <= 1);//.polymorph(n=>named("clone tree"));
     console.log(t3.info(true));
-    let t4 = t.clone(true, n => n.depth <= 1, (n, o) => n.poly(nt.named('clone'))).polymorph(nt.named("clone tree"));
+    let t4 = t.clone(true, n => n.depth <= 1, (n, o) => n.poly(nt.CreateName('clone'))).polymorph(nt.CreateName("clone tree"));
     console.log(t4.info(true));
     t4.merg(t3, 0);
     t4.merg(t3, 1, false);
@@ -31,16 +31,17 @@ test("poly tree test", () =>
     console.log(t.root.child(1)!.subTreeInfo());
 
     let t4s = tr.Simplify(t4);
-    let f = ft<nt.Named>(nt.named('the forest'));
+    let f = ft<nt.Name>(nt.CreateName('the forest'));
     f.trees.push(t2, t3, t4);
 
 
 
-    //let a = Tree().root.morph({ a: "s", b: 1 }).tree.morph({source:"sss"});
-    let a = tr();
+    //let a = tr().root.morph({ a: "s", b: 1 }).tree.morph({source:"sss"});
+    let a = tr().polymorph<{ a: number }, { source: string }[]>();
+    //let a = tr();
     let b = tr.Simplify(a);
-    let c = b.polymorph<{ a: number }, { source: string }>();
+    //let c = b.polymorph<{ a: number }, { source: string }>();
     let dd: tr.MorphNode<{ a: number }, { b: string }> = L.Any;
-    let e = tr.Nomalize(c);
-    let g = tr.Edit(c);
+    let e = tr.Nomalize(a);
+    let g = tr.Edit(b);
 });
