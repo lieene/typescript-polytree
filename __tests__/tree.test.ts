@@ -1,4 +1,5 @@
 import { Tree as tr, Forest as ft, NamedTree as nt } from "../src";
+import * as L from "@lieene/ts-utility";
 
 test("poly tree test", () =>
 {
@@ -39,4 +40,7 @@ test("poly tree test", () =>
     let a = tr();
     let b = tr.Simplify(a);
     let c = b.polymorph<{ a: number }, { source: string }>();
+    let dd: tr.MorphNode<{ a: number }, { b: string }> = L.Any;
+    let e = tr.Nomalize(c);
+    let g = tr.Edit(c);
 });
