@@ -14,7 +14,7 @@
     "preversion": "npm run lint",
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags",
-    "updade": "npm i @lieene/ts-utility"
+    "update": "npm i @lieene/ts-utility"
   },
   "repository": {
     "type": "git",
