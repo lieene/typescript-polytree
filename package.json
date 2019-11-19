@@ -1,6 +1,6 @@
 {
   "name": "poly-tree",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "polymorphic tree for typescript",
   "main": "out/index.js",
   "types": "out/index.d.ts",
@@ -14,7 +14,7 @@
     "preversion": "npm run lint",
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags",
-    "updade":"npm i @lieene/ts-utility"
+    "updade": "npm i @lieene/ts-utility"
   },
   "repository": {
     "type": "git",
