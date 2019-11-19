@@ -15,7 +15,7 @@
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags",
     "update": "npm i @lieene/ts-utility",
-    "fastpatch": "npm run update && git add . && git commit -m \"adapt dependency update\" && npm version patch && npm publish"
+    "fastpatch": "git add . && git commit && npm version patch && npm publish"
   },
   "repository": {
     "type": "git",
