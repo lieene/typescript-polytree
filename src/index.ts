@@ -1344,14 +1344,6 @@ namespace Typing {
   export type ForestNTF<N extends object, T extends object, F extends object> = L.Extend<IForest<MorphTreeX<N, T>>, F>;
 }
 
-namespace Extra {
-  import CNode = core.CNode;
-  import CTree = core.CTree;
-  import CForest = core.CForest;
-  import SimpleNode = Typing.NodeS;
-  import MorphNodeN = Typing.MorphNodeN;
-}
-
 export function Tree(mode: 'Simple'): Typing.TreeS;
 export function Tree(mode: 'Reandonly'): Typing.Tree;
 export function Tree(mode: 'Editable'): Typing.TreeX;
