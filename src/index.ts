@@ -1395,8 +1395,8 @@ export function Tree(...ext: any[]): any {
 }
 
 export namespace Tree {
-  export type CNode = core.CNode;
-  export type CTree = core.CTree;
+  export import CNode = core.CNode;
+  export import CTree = core.CTree;
 
   export import IsNode = func.IsNode;
   export import IsTree = func.IsTree;
@@ -1406,8 +1406,8 @@ export namespace Tree {
   export import Simplify = Typing.Simplify;
   export import Nomalize = Typing.Nomalize;
 
-  export import SimpleNode = Typing.NodeS;
-  export import SimpleTree = Typing.TreeS;
+  export import NodeS = Typing.NodeS;
+  export import TreeS = Typing.TreeS;
 
   export import Node = Typing.Node;
   export import Tree = Typing.Tree;
@@ -1415,13 +1415,13 @@ export namespace Tree {
   export import NodeX = Typing.NodeX;
   export import TreeX = Typing.TreeX;
 
-  export import NodeS = Typing.MorphNodeS;
-  export import NodeNS = Typing.MorphNodeNS;
-  export import NodeTS = Typing.MorphNodeTS;
+  export import MorphNodeS = Typing.MorphNodeS;
+  export import MorphNodeNS = Typing.MorphNodeNS;
+  export import MorphNodeTS = Typing.MorphNodeTS;
 
-  export import TreeS = Typing.MorphTreeS;
-  export import TreeTS = Typing.MorphTreeTS;
-  export import TreeNS = Typing.MorphTreeNS;
+  export import MorphTreeS = Typing.MorphTreeS;
+  export import MorphTreeTS = Typing.MorphTreeTS;
+  export import MorphTreeNS = Typing.MorphTreeNS;
 
   export import MorphNode = Typing.MorphNode;
   export import MorphNodeN = Typing.MorphNodeN;
