@@ -1423,13 +1423,13 @@ export namespace Tree {
   export import NodeX = Typing.NodeX;
   export import TreeX = Typing.TreeX;
 
-  export import SimpleMorphNode = Typing.MorphNodeS;
-  export import SimpleMorphNodeN = Typing.MorphNodeNS;
-  export import SimpleMorphNodeT = Typing.MorphNodeTS;
+  export import NodeS = Typing.MorphNodeS;
+  export import NodeNS = Typing.MorphNodeNS;
+  export import NodeTS = Typing.MorphNodeTS;
 
-  export import SimpleMorphTree = Typing.MorphTreeS;
-  export import SimpleMorphTreeT = Typing.MorphTreeTS;
-  export import SimpleMorphTreeN = Typing.MorphTreeNS;
+  export import TreeS = Typing.MorphTreeS;
+  export import TreeTS = Typing.MorphTreeTS;
+  export import TreeNS = Typing.MorphTreeNS;
 
   export import MorphNode = Typing.MorphNode;
   export import MorphNodeN = Typing.MorphNodeN;
