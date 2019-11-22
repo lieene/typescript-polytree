@@ -14,7 +14,7 @@
     "preversion": "npm run lint",
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags",
-    "update": "npm i @lieene/ts-utility",
+    "update": "npm i @lieene/ts-utility && npm run test",
     "fastpatch": "git add . && git commit && npm version patch && npm publish"
   },
   "repository": {
