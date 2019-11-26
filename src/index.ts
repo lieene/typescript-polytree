@@ -1436,7 +1436,7 @@ export namespace Name
   export type NamedTreeS = Typing.MorphTreeS<Name, Name>;
   export type NamedTreeMS<N extends object, T extends object> = Typing.MorphTreeS<Name & N, Name & T>;
   export type NamedTreeMNS<N extends object> = Typing.MorphTreeS<Name & N, Name>;
-  export type NamedTreeMTS<T extends object> = Typing.MorphTreeS<Name & T, Name>;
+  export type NamedTreeMTS<T extends object> = Typing.MorphTreeS<Name, Name & T>;
 
   export type NamedTree = Typing.MorphTree<Name, Name>;
   export type NamedTreeM<N extends object, T extends object> = Typing.MorphTreeS<Name & N, Name & T>;
