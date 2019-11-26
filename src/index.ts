@@ -1419,12 +1419,34 @@ export namespace Name
   }
 
   export type NamedTreeS = Typing.MorphTreeS<Name, Name>;
-  export type NamedTree = Typing.MorphTree<Name, Name>;
-  export type NamedTreeX = Typing.MorphTreeX<Name, Name>;
+  export type NamedTreeMS<N extends object, T extends object> = Typing.MorphTreeS<Name & N, Name & T>;
+  export type NamedTreeMNS<N extends object> = Typing.MorphTreeS<Name & N, Name>;
+  export type NamedTreeMTS<T extends object> = Typing.MorphTreeS<Name & T, Name>;
 
-  export type NamedNodeS = Typing.MorphNodeNS<Name>;
-  export type NamedNode = Typing.MorphNodeN<Name>;
-  export type NamedNodeX = Typing.MorphNodeNX<Name>;
+  export type NamedTree = Typing.MorphTree<Name, Name>;
+  export type NamedTreeM<N extends object, T extends object> = Typing.MorphTreeS<Name & N, Name & T>;
+  export type NamedTreeMN<N extends object> = Typing.MorphTree<Name & N, Name>;
+  export type NamedTreeMT<T extends object> = Typing.MorphTree<Name, Name & T>;
+
+  export type NamedTreeX = Typing.MorphTreeX<Name, Name>;
+  export type NamedTreeMX<N extends object, T extends object> = Typing.MorphTreeX<Name & N, Name & T>;
+  export type NamedTreeMNX<N extends object> = Typing.MorphTreeX<Name & N, Name>;
+  export type NamedTreeMTX<T extends object> = Typing.MorphTreeX<Name, Name & T>;
+
+  export type NamedNodeS = Typing.MorphNodeS<Name, Name>;
+  export type NamedNodeMS<N extends object, T extends object> = Typing.MorphNodeS<Name & N, Name & T>;
+  export type NamedNodeMNS<N extends object> = Typing.MorphNodeS<Name & N, Name>;
+  export type NamedNodeMTS<T extends object> = Typing.MorphNodeS<Name, Name & T>;
+
+  export type NamedNode = Typing.MorphNode<Name, Name>;
+  export type NamedNodeM<N extends object, T extends object> = Typing.MorphNode<Name & N, Name & T>;
+  export type NamedNodeMN<N extends object> = Typing.MorphNode<Name & N, Name>;
+  export type NamedNodeMT<T extends object> = Typing.MorphNode<Name, Name & T>;
+
+  export type NamedNodeX = Typing.MorphNodeX<Name, Name>;
+  export type NamedNodeMX<N extends object, T extends object> = Typing.MorphNodeX<Name & N, Name & T>;
+  export type NamedNodeMNX<N extends object> = Typing.MorphNodeX<Name & N, Name>;
+  export type NamedNodeMTX<T extends object> = Typing.MorphNodeX<Name, Name & T>;
 
   export type NamedForest = Typing.ForestNTF<Name, Name, Name>;
 }
