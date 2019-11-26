@@ -1,6 +1,6 @@
 {
   "name": "poly-tree",
-  "version": "1.4.7",
+  "version": "1.4.8",
   "description": "polymorphic tree for typescript",
   "main": "out/index.js",
   "types": "out/index.d.ts",
