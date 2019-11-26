@@ -1411,12 +1411,8 @@ export function Name(name: string | undefined): Name
 
 export namespace Name
 {
-  export function NamedTree(rootName?: string, treeName?: string): Typing.MorphTreeNX<Name>
-  {
-    let t: core.CTree = Tree(Name(rootName)) as any;
-    if (treeName !== undefined) { t.morph(Name(treeName)); }
-    return t as any;
-  }
+  export function NamedTree(rootName?: string, treeName?: string): Typing.MorphTreeX<Name, Name>
+  { return Tree("Editable", n => Name(rootName), Name(treeName)); }
 
   export type NamedTreeS = Typing.MorphTreeS<Name, Name>;
   export type NamedTreeMS<N extends object, T extends object> = Typing.MorphTreeS<Name & N, Name & T>;
