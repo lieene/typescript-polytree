@@ -59,4 +59,6 @@ test("poly tree test", () =>
     let g = Tree.Edit(b);
     g.setLogger(() => "logloglog");
     console.log(g.info(false));
+    let nt=Name.NamedTree('root','tree');
+    console.log(nt.info(true));
 });
