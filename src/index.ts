@@ -322,14 +322,15 @@ namespace func
   }
 
   /** go down tree untill deepest child applying action, visit all child or by picker on each level @param this current node @param action callback on child go down tip @param picker optional picker returns numbers choose child by peer id */
-  export function forDecending(this: CNode, action: (child: CNode, parent: CNode) => void, picker?: (parent: CNode) => ReadonlyArray<number> | "all"): void
+  export function forDecending(this: CNode, action: (child: CNode, parent: CNode) => void, picker?: (parent: CNode) => ReadonlyArray<number> | "all" | "none"): void
   {
     let nodes = this.tree.nodes;
     let childrenID = this.childrenID;
     if (picker !== undefined)
     {
       let pick = picker(this);
-      if (pick !== "all")
+      if (pick === "none") { return; }
+      else if (pick !== "all")
       {
         childrenID = pick.reduce((cid, peer) =>
         {
@@ -865,10 +866,10 @@ namespace Typing
     readonly children: readonly TNode[];
     readonly deepChildren: readonly TNode[];
     readonly childCount: number;
-    
+
     forAcending(action: (parent: TNode, child: TNode) => void | ('break' | undefined)): void;
-    forDecending(action: (child: TNode, parent: TNode) => void, picker?: (parent: TNode) => ReadonlyArray<number> | "all"): void;
-    
+    forDecending(action: (child: TNode, parent: TNode) => void, picker?: (parent: TNode) => ReadonlyArray<number> | "all" | "none"): void;
+
     child(...i: (number | 'last')[]): TNode | undefined;
     clone(cleanTree?: true, picker?: (oldNode: TNode) => boolean, remix?: (newNode: NodeX, oldNode: TNode) => void): TreeX;
     clone(cleanTree?: false, picker?: (oldNode: TNode) => boolean, remix?: (newNode: TNode, oldNode: TNode) => void): TTree;
@@ -917,7 +918,7 @@ namespace Typing
     findChild<T extends object>(matcher: (node: TNode) => boolean, deep?: boolean | undefined): Array<TNode & T>;
 
     forAcending(action: (parent: TNode, child: TNode) => void | ('break' | undefined)): void;
-    forDecending(action: (child: TNode, parent: TNode) => void, picker?: (parent: TNode) => ReadonlyArray<number> | "all"): void;
+    forDecending(action: (child: TNode, parent: TNode) => void, picker?: (parent: TNode) => ReadonlyArray<number> | "all" | "none"): void;
 
     subTreeInfo(detail?: boolean): string;
     nodeInfo(detail?: boolean): string;
@@ -971,7 +972,7 @@ namespace Typing
     findChild<T extends object>(matcher: (node: TNode) => boolean, deep?: boolean | undefined): Array<TNode & T>;
 
     forAcending(action: (parent: TNode, child: TNode) => void | ('break' | undefined)): void;
-    forDecending(action: (child: TNode, parent: TNode) => void, picker?: (parent: TNode) => ReadonlyArray<number> | "all"): void;
+    forDecending(action: (child: TNode, parent: TNode) => void, picker?: (parent: TNode) => ReadonlyArray<number> | "all" | "none"): void;
 
     subTreeInfo(detail?: boolean): string;
     nodeInfo(detail?: boolean): string;

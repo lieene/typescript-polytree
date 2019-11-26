@@ -37,10 +37,10 @@ test("poly tree test", () =>
     let tx = Tree((n) => ({ b: 2 }), Name('tx'), { a: 1 });
     tx.merg(tm, false);
     tm.merg(tx, false);
-    
+
     let nnt = tm.findByName<typeof tm>(undefined);
     console.log(nnt.join("-"));
-    
+
     let t4s = Tree.Simplify(t4);
     let f = Forest<Name, Name, Name>(Name('the forest'));
     f.trees.push(Tree.Edit(t1), t2, t3, t4);
@@ -59,6 +59,8 @@ test("poly tree test", () =>
     let g = Tree.Edit(b);
     g.setLogger(() => "logloglog");
     console.log(g.info(false));
-    let nt=Name.NamedTree('root','tree');
+    let nt = Name.NamedTree('root', 'tree');
     console.log(nt.info(true));
+
+    t4.root.forDecending((c, p) => { console.log(`P: ${p.name}[${p.index}] => C: ${c.name}[${c.index}]`); }, p => p.index > 4 ? "none" : "all");
 });
